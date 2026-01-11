@@ -13,7 +13,7 @@ from services.parsers import (
     parse_themes, parse_students, parse_attendance,
     parse_checked_hw, parse_completed_hw
 )
-from services.utils import format_list,
+from services.utils import format_list
 from config import TEMP_DIR
 
 router = Router()
@@ -113,4 +113,5 @@ async def process_file(message: Message, state: FSMContext):
     finally:
         if file_path.exists():
             file_path.unlink()
+
         await state.clear()
