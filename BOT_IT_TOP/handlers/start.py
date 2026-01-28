@@ -1,19 +1,36 @@
 from aiogram import Router
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 router = Router()
 
+
+def get_inline_menu():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(text="📅 Расписание", callback_data="report1"),
+            InlineKeyboardButton(text="📘 Темы занятий", callback_data="report2")
+        ],
+        [
+            InlineKeyboardButton(text="👨‍🎓 Проблемные студенты", callback_data="report3"),
+            InlineKeyboardButton(text="📉 Посещаемость", callback_data="report4")
+        ],
+        [
+            InlineKeyboardButton(text="📝 Проверка ДЗ (месяц)", callback_data="report5_month"),
+            InlineKeyboardButton(text="📝 Проверка ДЗ (неделя)", callback_data="report5_week")
+        ],
+        [
+            InlineKeyboardButton(text="📚 Выполнение ДЗ", callback_data="report6")
+        ]
+    ])
+
+
 @router.message(Command("start"))
 async def cmd_start(message: Message):
-    keyboard = ReplyKeyboardMarkup(
-        keyboard=[
-            [KeyboardButton(text="/report1"), KeyboardButton(text="/report2")],
-            [KeyboardButton(text="/report3"), KeyboardButton(text="/report4")],
-            [KeyboardButton(text="/report5_month"), KeyboardButton(text="/report5_week")],
-            [KeyboardButton(text="/report6")],
-        ],
-        resize_keyboard=True
+    text = (
+        "👋 <b>Добро пожаловать!</b>\n\n"
+        "Этот бот формирует отчёты по загруженным XLS/XLSX файлам.\n"
+        "Выберите нужный отчёт из меню ниже."
     )
-    await message.answer("Добро пожаловать! Выберите отчёт:", reply_markup=keyboard)
+
+    await message.answer(text, reply_markup=get_inline_menu())
