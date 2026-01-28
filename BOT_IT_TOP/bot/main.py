@@ -2,16 +2,29 @@ import asyncio
 import logging
 
 from loader import bot, dp
-from handlers.start import router as start_router
-from handlers.reports import router as reports_router
 
-logging.basicConfig(level=logging.INFO)
-
-dp.include_routers(start_router, reports_router)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/bot.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
 
 async def main():
-    await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
+    try:
+        logging.info("Бот запущен. Ожидание сообщений...")
+        await dp.start_polling(bot)
+
+    except Exception as e:
+        logging.error(f"Критическая ошибка: {e}")
+
+    finally:
+        logging.info("Закрытие сессии бота...")
+        await bot.session.close()
+        logging.info("Бот остановлен.")
+
 
 if __name__ == "__main__":
     try:
